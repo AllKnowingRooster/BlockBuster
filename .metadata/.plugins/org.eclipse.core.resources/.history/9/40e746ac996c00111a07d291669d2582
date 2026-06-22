@@ -1,0 +1,13 @@
+package jwtProvider.service;
+
+import javax.crypto.SecretKey;
+
+import io.jsonwebtoken.Claims;
+
+public interface jwtService {
+
+	String createAccessToken();
+	String createRefreshToken();
+	SecretKey getSigningKey();
+	Claims validateToken(String token);
+}

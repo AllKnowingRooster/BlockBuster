@@ -1,0 +1,5 @@
+package com.blockbuster.authenticationService.impl;
+
+public class CustomUserDetailsImpl {
+
+}

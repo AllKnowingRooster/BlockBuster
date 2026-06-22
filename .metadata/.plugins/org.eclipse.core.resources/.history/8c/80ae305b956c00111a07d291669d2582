@@ -1,0 +1,5 @@
+package jwtProvider.service;
+
+public interface jwtService {
+
+}

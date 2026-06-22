@@ -1,0 +1,8 @@
+package com.blockbuster.dto;
+
+public class SessionData {
+	private String deviceId;
+	private long userId;
+	private Set<String> roles;
+	private String refreshJti;
+}

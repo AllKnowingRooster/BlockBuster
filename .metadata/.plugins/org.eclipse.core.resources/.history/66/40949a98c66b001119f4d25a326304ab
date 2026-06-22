@@ -1,0 +1,15 @@
+package com.blockbuster.authenticationService.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name="users")
+public class Users  {
+	
+	@Id
+	@GeneratedValue(startegy=GenerationType.Identity)
+	private long id;
+	
+	
+}

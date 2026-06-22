@@ -1,0 +1,5 @@
+package com.blockbuster.authenticationService.controller;
+
+public class UsersController {
+
+}

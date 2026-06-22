@@ -1,0 +1,40 @@
+package com.blockbuster.authenticationService;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import jwtProvider.impl.JwtServiceImpl;
+
+@Configuration
+public class ApplicationConfiguration {
+
+	@Value(value="jwt.secret")
+	private String jwtSecret;
+	
+	@Value(value="jwt.accessExpiration")
+	private long accessExpiration;
+	
+	@Value(value="jwt.refreshExpiration")
+	private long refreshExpiration;
+	
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	AuthenticationManager authentication(AuthenticationConfiguration config) {
+		return config.getAuthenticationManager();
+	}
+	
+	@Bean
+	JwtServiceImpl jwtService() {
+		return new JwtServiceImpl(jwtSecret,accessExpiration,refreshExpiration);
+	}
+	
+}

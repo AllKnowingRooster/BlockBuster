@@ -1,0 +1,11 @@
+package jwtProvider.service;
+
+import io.jsonwebtoken.Claims;
+
+public interface jwtService {
+
+	String createAccessToken();
+	String createRefreshToken();
+	String getSigningKey();
+	Claims validateToken(String token);
+}

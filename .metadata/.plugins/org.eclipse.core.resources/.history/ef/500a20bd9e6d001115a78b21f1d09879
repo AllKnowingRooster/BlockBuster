@@ -1,0 +1,30 @@
+package com.blockbuster.authenticationService.impl;
+
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import com.blockbuster.authenticationService.CustomUserDetails;
+import com.blockbuster.authenticationService.entity.Users;
+import com.blockbuster.authenticationService.repository.UsersRepository;
+
+
+public class CustomUserDetailsImpl implements UserDetailsService {
+
+	@Autowired
+	UsersRepository userRepository;
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+		Users userData=userRepository.findUserByEmail(username).get();	
+		return new CustomUserDetails(userData.getId(),userData.getEmail(),userData.getPassword(),userData.getListRoles().stream().map((v)->{
+			return new SimpleGrantedAuthority(v.getRoles().getRoleName().toString());
+		}).collect(Collectors.toSet()));
+	}
+
+}

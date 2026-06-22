@@ -1,0 +1,52 @@
+package redisManager.impl;
+
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
+import redisManager.service.RedisService;
+
+public class RedisServiceImpl implements RedisService {
+
+	private RedisClient client;
+	private StatefulRedisConnection<String,String> con;
+	private RedisCommands<String,String> command;
+	private long expiration;
+	
+	public RedisServiceImpl(String url,long expiration) {
+		this.client=RedisClient.create(url);
+		this.con=client.connect();
+		this.command=con.sync();
+		this.expiration=expiration;
+	}
+	
+	@Override
+	public String set(String key,String value) {
+		// TODO Auto-generated method stub
+		return this.command.setex(key, expiration, value);
+	}
+
+	@Override
+	public long remove(String key) {
+		// TODO Auto-generated method stub
+		return this.command.del(key);
+	}
+
+	@Override
+	public String get(String key) {
+		// TODO Auto-generated method stub
+		return this.command.get(key);
+	}
+
+	@Override
+	public boolean exists(String key) {
+		// TODO Auto-generated method stub
+		return this.command.exists(key)==1;
+	}
+
+	@Override
+	public String set(String key, long expiration, String value) {
+		// TODO Auto-generated method stub
+		return this.command.setex(key, expiration, value);
+	}
+
+}

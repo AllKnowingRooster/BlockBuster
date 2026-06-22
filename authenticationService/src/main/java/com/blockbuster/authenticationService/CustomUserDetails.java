@@ -1,0 +1,51 @@
+package com.blockbuster.authenticationService;
+
+import java.util.Collection;
+import java.util.Set;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+@SuppressWarnings("serial")
+public class CustomUserDetails implements UserDetails {
+
+	private long id;
+	private String email;
+	private String password;
+	private Set<GrantedAuthority> authorities;
+	
+	public CustomUserDetails(long id,String email,String password,Set<GrantedAuthority> authorities) {
+		this.id=id;
+		this.email=email;
+		this.password=password;
+		this.authorities=authorities;
+	}
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return this.authorities;
+	}
+
+	@Override
+	public @Nullable String getPassword() {
+		// TODO Auto-generated method stub
+		return this.password;
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return this.email;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+}

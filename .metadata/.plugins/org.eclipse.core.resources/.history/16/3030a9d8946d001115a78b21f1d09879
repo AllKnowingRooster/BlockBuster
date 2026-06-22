@@ -1,0 +1,174 @@
+package com.blockbuster.authenticationService.impl;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.blockbuster.authenticationService.CustomUserDetails;
+import com.blockbuster.authenticationService.entity.Roles;
+import com.blockbuster.authenticationService.entity.UserRoles;
+import com.blockbuster.authenticationService.entity.Users;
+import com.blockbuster.authenticationService.repository.UsersRepository;
+import com.blockbuster.authenticationService.service.UsersService;
+import com.blockbuster.dto.GetUserResponse;
+import com.blockbuster.dto.RefreshRequest;
+import com.blockbuster.dto.RefreshResponse;
+import com.blockbuster.dto.SessionData;
+import com.blockbuster.dto.SignInRequest;
+import com.blockbuster.dto.SignInResponse;
+import com.blockbuster.dto.SignUpRequest;
+import com.blockbuster.dto.SignUpResponse;
+import com.blockbuster.enumerated.RoleName;
+
+import io.jsonwebtoken.Claims;
+import jwtProvider.impl.JwtServiceImpl;
+import redisManager.impl.RedisServiceImpl;
+import tools.jackson.databind.ObjectMapper;
+
+public class UsersServiceImpl implements UsersService {
+
+	@Autowired
+	UsersRepository userRepository;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	AuthenticationManager authManager;
+	
+	@Autowired
+	JwtServiceImpl jwtService;
+	
+	@Autowired
+	RedisServiceImpl redisService;
+	
+	@Autowired
+	ObjectMapper objectMapper;
+	
+	@Override
+	public SignUpResponse signup(SignUpRequest request) {
+		if(!userRepository.findUserByEmail(request.getEmail()).isEmpty()) {
+			throw new RuntimeException("Email Already Exists");
+		}
+		Users newUser=new Users();
+		newUser.setEmail(request.getEmail());
+		newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+		Set<UserRoles> newUserRoles=new HashSet<UserRoles>();
+		for(String x : request.getListRoles()) {
+				UserRoles userRoles=new UserRoles();
+				userRoles.setUser(newUser);
+				Roles newRole=new Roles();
+				newRole.setRoleName(RoleName.valueOf(x));
+				userRoles.setRoles(newRole);
+				newUserRoles.add(userRoles);
+		}
+		userRepository.save(newUser);
+		SignUpResponse response=new SignUpResponse();
+		response.setEmail(newUser.getEmail());
+		return response;
+	}
+
+	@Override
+	public SignInResponse signin(SignInRequest request) {
+		if(userRepository.findUserByEmail(request.getEmail()).isEmpty()) {
+			throw new RuntimeException("Invalid Username or Password");
+		}
+		UsernamePasswordAuthenticationToken authToken=new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword());
+		Authentication auth=authManager.authenticate(authToken);
+		CustomUserDetails userDetails=(CustomUserDetails)auth.getCredentials();
+		String sid=UUID.randomUUID().toString();
+		String refreshJti=UUID.randomUUID().toString();
+		String accessJti=UUID.randomUUID().toString();
+		String accessToken=jwtService.createAccessToken(sid,accessJti,userDetails.getUsername());
+		String refreshToken=jwtService.createRefreshToken(sid,refreshJti, userDetails.getUsername());
+		redisService.set(
+				String.format("session:%s",sid), 
+				objectMapper.writeValueAsString(
+						new SessionData(
+										request.getDeviceId(),
+										userDetails.getId(),
+										userDetails.getAuthorities().stream().map((v)->{
+												return v.toString();
+										}).collect(Collectors.toSet()),
+										refreshJti
+										)));
+		SignInResponse response=new SignInResponse(userDetails.getUsername(),new Date(System.currentTimeMillis()),accessToken,refreshToken);
+		return response;
+	}
+
+	@Override
+	public String logout(String authorizationHeader) {
+		
+		String jwtToken=authorizationHeader.substring(7);
+		Claims claim=jwtService.validateToken(jwtToken);
+		String id=claim.get("sid",String.class);
+		
+		String key=String.format("session:%s",id);
+		
+		if(!redisService.exists(key)) {
+			throw new RuntimeException("User Session Is Invalid");
+		}
+		
+		redisService.remove(key);
+		String blacklistKey=String.format("blacklist:%s", id);
+		long expiration=(claim.getExpiration().getTime()-System.currentTimeMillis())/1000;
+		redisService.set(blacklistKey,expiration,"true");
+		
+		return "User Has Logged Out";
+	}
+
+	@Override
+	public GetUserResponse getUser(String authorizationHeader) {
+		String jwtToken=authorizationHeader.substring(7);
+		Claims claim=jwtService.validateToken(jwtToken);
+		String sid=claim.get("sid",String.class);
+		String key=String.format("session:%s",sid);
+		SessionData sessiondata=objectMapper.readValue(redisService.get(key),SessionData.class);
+		Users userData=userRepository.findById(sessiondata.getUserId()).get();
+		GetUserResponse response= new GetUserResponse(userData.getEmail());
+		return response;
+	}
+
+	@Override
+	public RefreshResponse refresh( RefreshRequest request, String authorizationHeader) {
+		Claims claim=jwtService.validateToken(request.getRefreshToken());
+		String type=claim.get("type",String.class);
+		if(!type.equals("refresh")) {
+			throw new RuntimeException("Invalid Token Type");
+		}
+		
+		String sid=claim.get("sid",String.class);
+		String key=String.format("session:%s",sid);
+		String refreshJti=claim.get("jti",String.class);
+		if(!redisService.exists(key) && redisService.exists(key)) {
+			throw new RuntimeException("Session Expired");
+		}
+		
+		SessionData data=objectMapper.readValue(redisService.get(key),SessionData.class);
+		if(!data.getRefreshJti().equals(claim.get("jti",String.class))) {
+			throw new RuntimeException("Invalid Jti");
+		}
+		
+		String newRefreshToken=UUID.randomUUID().toString();
+		String newAccessToken=UUID.randomUUID().toString();
+		Claims claimAccess=jwtService.validateToken(authorizationHeader.substring(7));
+		String accessJti=claimAccess.get("jti",String.class);
+		data.setRefreshJti(newRefreshToken);
+		String blackListAccessKey=String.format("blacklist:%s",accessJti);
+		String blackListRefreshKey=String.format("blacklist:%s",refreshJti);
+		redisService.set(blackListAccessKey,"true");
+		redisService.set(blackListRefreshKey,"true");
+		redisService.set(key,objectMapper.writeValueAsString(data));
+		RefreshResponse response=new RefreshResponse(newAccessToken,newRefreshToken);
+		return response;
+	}
+
+}

@@ -1,0 +1,14 @@
+package com.blockbuster.authenticationService.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
+
+@Entity
+@IdClass(UserRolesId.class)
+@Table(name="roles",uniqueConstraint= {
+		@UniqueConstraint= {columnNames= {"userId","roleId"}
+})
+public class UserRoles {
+
+}

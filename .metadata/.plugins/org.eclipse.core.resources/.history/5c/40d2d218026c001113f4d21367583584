@@ -1,0 +1,9 @@
+package com.blockbuster.authenticationService.entity;
+
+import java.io.Serializable;
+
+public class UserRolesId implements Serializable {
+	
+	
+	
+}

@@ -1,0 +1,52 @@
+package com.blockbuster.authenticationService;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import jwtProvider.impl.JwtServiceImpl;
+import redisManager.impl.RedisServiceImpl;
+
+@Configuration
+public class ApplicationConfiguration {
+
+	@Value(value="jwt.secret")
+	private String jwtSecret;
+	
+	@Value(value="jwt.accessExpiration")
+	private long accessExpiration;
+	
+	@Value(value="jwt.refreshExpiration")
+	private long refreshExpiration;
+	
+	@Value(value="redis.url")
+	private String redisUrl;
+	
+	@value(value="redis.expiration")
+	private long redisExpiration
+	
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	RedisServiceImpl redisService() {
+		return new RedisServiceImpl(redisUrl)
+	}
+	
+	@Bean
+	AuthenticationManager authentication(AuthenticationConfiguration config) {
+		return config.getAuthenticationManager();
+	}
+	
+	@Bean
+	JwtServiceImpl jwtService() {
+		return new JwtServiceImpl(jwtSecret,accessExpiration,refreshExpiration);
+	}
+	
+}

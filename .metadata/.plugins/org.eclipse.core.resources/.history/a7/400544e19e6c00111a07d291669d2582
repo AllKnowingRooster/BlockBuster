@@ -1,0 +1,7 @@
+package redisManager.service;
+
+public interface RedisService {
+	String setKey();
+	String removeKey();
+	String getKey();
+}

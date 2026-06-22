@@ -1,0 +1,9 @@
+package jwtProvider.service;
+
+public interface jwtService {
+
+	String createAccessToken();
+	String createRefreshToken();
+	String getSigningKey();
+	Claims validateToken();
+}

@@ -1,0 +1,6 @@
+package com.blockbuster.authenticationService;
+
+@Configuration
+public class ApplicationConfiguration {
+
+}

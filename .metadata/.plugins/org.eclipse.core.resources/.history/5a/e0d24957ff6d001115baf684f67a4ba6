@@ -1,0 +1,44 @@
+package com.blockbuster.authenticationService;
+
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jwtProvider.impl.JwtServiceImpl;
+
+public class CustomRequestAuthentication extends OncePerRequestFilter{
+
+	@Autowired
+	JwtServiceImpl jwtService;
+	
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	
+		String authorization=request.getHeader("Authorization");
+		if(authorization==null || !authorization.startsWith("Bearer ")) {
+			throw new RuntimeException("Invalid Header");
+		}
+		
+		String token=authorization.substring(7);
+		try {
+			Claims claim=jwtService.validateToken(token);
+			
+			
+			
+		}catch(Exception e) {
+			throw new RuntimeException("Invalid JWT Token");
+		}
+		
+	}
+
+	
+	
+}

@@ -1,0 +1,9 @@
+package com.blockbuster.dto;
+
+import java.util.Date;
+
+public class SignInResponse {
+	private String email;
+	private Date loginDate;
+	private String jwtToken;
+}

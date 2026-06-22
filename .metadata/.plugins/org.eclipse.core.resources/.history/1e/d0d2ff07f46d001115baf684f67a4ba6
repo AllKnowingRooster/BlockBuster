@@ -1,0 +1,10 @@
+package com.blockbuster.authenticationService;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class CustomLogger implements ContainerRequestFilter {
+	
+	
+	
+}

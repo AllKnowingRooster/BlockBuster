@@ -1,0 +1,38 @@
+package jwtProvider.impl;
+
+import io.jsonwebtoken.Claims;
+import jwtProvider.service.jwtService;
+
+public class JwtServiceImpl implements jwtService{
+
+	private String secret;
+	
+	public JwtSecretImpl(String secret) {
+		this.secret=secret;
+	}
+	
+	@Override
+	public String createAccessToken() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String createRefreshToken() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getSigningKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Claims validateToken(String token) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

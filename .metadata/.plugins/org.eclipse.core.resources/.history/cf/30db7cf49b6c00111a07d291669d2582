@@ -1,0 +1,5 @@
+package redisManager.service;
+
+public interface RedisService {
+
+}

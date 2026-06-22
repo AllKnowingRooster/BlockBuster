@@ -1,0 +1,4 @@
+spring.application.name=authenticationService
+server.port=12000
+spring.jpa.database-platform=
+spring.datasource

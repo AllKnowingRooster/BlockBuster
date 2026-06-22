@@ -1,0 +1,42 @@
+package jwtProvider.impl;
+
+import javax.crypto.SecretKey;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.security.Keys;
+import jwtProvider.service.jwtService;
+
+public class JwtServiceImpl implements jwtService{
+
+	private String secret;
+	
+	public JwtServiceImpl(String secret) {
+		this.secret=secret;
+	}
+	
+	@Override
+	public String createAccessToken() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String createRefreshToken() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SecretKey getSigningKey() {
+		// TODO Auto-generated method stub
+		byte[] secretByte=this.secret.getBytes();
+		return Keys.hmacShaKeyFor(secretByte);
+	}
+
+	@Override
+	public Claims validateToken(String token) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

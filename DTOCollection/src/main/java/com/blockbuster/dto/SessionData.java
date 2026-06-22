@@ -1,0 +1,43 @@
+package com.blockbuster.dto;
+
+import java.util.Set;
+
+public class SessionData {
+	private String deviceId;
+	private long userId;
+	private Set<String> roles;
+	private String refreshJti;
+	
+	public SessionData() {};
+	public SessionData(String deviceId,long userId,Set<String> roles,String refreshJti) {
+		this.deviceId=deviceId;
+		this.userId=userId;
+		this.roles=roles;
+		this.refreshJti=refreshJti;
+	}
+	
+	public String getDeviceId() {
+		return deviceId;
+	}
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+	public long getUserId() {
+		return userId;
+	}
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+	public Set<String> getRoles() {
+		return roles;
+	}
+	public void setRoles(Set<String> roles) {
+		this.roles = roles;
+	}
+	public String getRefreshJti() {
+		return refreshJti;
+	}
+	public void setRefreshJti(String refreshJti) {
+		this.refreshJti = refreshJti;
+	}
+}

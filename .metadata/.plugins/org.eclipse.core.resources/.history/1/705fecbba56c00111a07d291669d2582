@@ -1,0 +1,5 @@
+package com.blockbuster.authenticationService.repository;
+
+public interface RolesRepository {
+
+}

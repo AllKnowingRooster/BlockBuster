@@ -1,0 +1,5 @@
+package redisManager.impl;
+
+public class RedisServiceImpl {
+
+}

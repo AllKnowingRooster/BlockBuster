@@ -1,0 +1,11 @@
+package com.blockbuster.authenticationService.service;
+
+public interface UsersService {
+	
+	void signup();
+	void signin();
+	void logout();
+	void getUser();
+	void updateUser();
+	
+}

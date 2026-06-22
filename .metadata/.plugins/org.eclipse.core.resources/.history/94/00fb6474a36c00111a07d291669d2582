@@ -1,0 +1,8 @@
+package redisManager.service;
+
+public interface RedisService {
+	String set();
+	long remove();
+	String get();
+	boolean exists();
+}

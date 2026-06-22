@@ -1,0 +1,15 @@
+package com.blockbuster.authenticationService.service;
+
+import com.blockbuster.dto.GetUserResponse;
+import com.blockbuster.dto.SignInRequest;
+import com.blockbuster.dto.SignInResponse;
+import com.blockbuster.dto.SignUpRequest;
+import com.blockbuster.dto.SignUpResponse;
+
+public interface UsersService {
+	
+	SignUpResponse signup(SignUpRequest request);
+	SignInResponse signin(SignInRequest request);
+	String logout(String authorizationHeader);
+	GetUserResponse getUser(String token);
+}

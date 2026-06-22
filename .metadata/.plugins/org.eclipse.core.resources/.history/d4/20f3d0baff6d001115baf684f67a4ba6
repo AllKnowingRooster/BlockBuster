@@ -1,0 +1,74 @@
+package com.blockbuster.authenticationService;
+
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.blockbuster.dto.SessionData;
+
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jwtProvider.impl.JwtServiceImpl;
+import redisManager.impl.RedisServiceImpl;
+import tools.jackson.databind.ObjectMapper;
+
+public class CustomRequestAuthentication extends OncePerRequestFilter{
+
+	@Autowired
+	RedisServiceImpl redisService;
+	
+	@Autowired
+	JwtServiceImpl jwtService;
+	
+	@Autowired
+	ObjectMapper objectMapper;
+	
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	
+		String authorization=request.getHeader("Authorization");
+		if(authorization==null || !authorization.startsWith("Bearer ")) {
+			throw new RuntimeException("Invalid Header");
+		}
+		
+		String token=authorization.substring(7);
+		try {
+			Claims claim=jwtService.validateToken(token);
+			String sid=claim.get("sid",String.class);
+			String jti=claim.get("jti",String.class);
+			String key=String.format("session:%s",sid);
+			String blacklistKey=String.format("blacklist:%s",jti);
+			
+			if(redisService.exists(blacklistKey)) {
+				throw new RuntimeException("Jwt Blacklisted");
+			}
+			
+			if(!redisService.exists(key)) {
+				throw new RuntimeException("Session Expired");
+			}
+			
+			String subject=claim.getSubject();
+			if(subject!=null && SecurityContextHolder.getContext().getAuthentication()==null) {
+				SessionData data=objectMapper.readValue(redisService.get(key),SessionData.class);
+				Set<SimpleGrantedAuthority> listAuthorities;
+				UsernamePasswordAuthenticationToken authToken=new UsernamePasswordAuthenticationToken();	
+			}
+			
+			
+		}catch(Exception e) {
+			throw new RuntimeException("Invalid JWT Token");
+		}
+		
+	}
+
+	
+	
+}

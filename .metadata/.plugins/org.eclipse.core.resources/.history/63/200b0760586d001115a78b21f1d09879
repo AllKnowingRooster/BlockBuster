@@ -1,0 +1,116 @@
+package com.blockbuster.authenticationService.impl;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.blockbuster.authenticationService.CustomUserDetails;
+import com.blockbuster.authenticationService.entity.Roles;
+import com.blockbuster.authenticationService.entity.UserRoles;
+import com.blockbuster.authenticationService.entity.Users;
+import com.blockbuster.authenticationService.repository.UsersRepository;
+import com.blockbuster.authenticationService.service.UsersService;
+import com.blockbuster.dto.GetUserResponse;
+import com.blockbuster.dto.SessionData;
+import com.blockbuster.dto.SignInRequest;
+import com.blockbuster.dto.SignInResponse;
+import com.blockbuster.dto.SignUpRequest;
+import com.blockbuster.dto.SignUpResponse;
+import com.blockbuster.enumerated.RoleName;
+
+import jwtProvider.impl.JwtServiceImpl;
+import redisManager.impl.RedisServiceImpl;
+import tools.jackson.databind.ObjectMapper;
+
+public class UsersServiceImpl implements UsersService {
+
+	@Autowired
+	UsersRepository userRepository;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	AuthenticationManager authManager;
+	
+	@Autowired
+	JwtServiceImpl jwtService;
+	
+	@Autowired
+	RedisServiceImpl redisService;
+	
+	@Autowired
+	ObjectMapper objectMapper;
+	
+	@Override
+	public SignUpResponse signup(SignUpRequest request) {
+		if(!userRepository.findUserByEmail(request.getEmail()).isEmpty()) {
+			throw new RuntimeException("Email Already Exists");
+		}
+		Users newUser=new Users();
+		newUser.setEmail(request.getEmail());
+		newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+		Set<UserRoles> newUserRoles=new HashSet<UserRoles>();
+		for(String x : request.getListRoles()) {
+				UserRoles userRoles=new UserRoles();
+				userRoles.setUser(newUser);
+				Roles newRole=new Roles();
+				newRole.setRoleName(RoleName.valueOf(x));
+				userRoles.setRoles(newRole);
+				newUserRoles.add(userRoles);
+		}
+		userRepository.save(newUser);
+		SignUpResponse response=new SignUpResponse();
+		response.setEmail(newUser.getEmail());
+		return response;
+	}
+
+	@Override
+	public SignInResponse signin(SignInRequest request) {
+		if(userRepository.findUserByEmail(request.getEmail()).isEmpty()) {
+			throw new RuntimeException("Invalid Username or Password");
+		}
+		UsernamePasswordAuthenticationToken authToken=new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword());
+		Authentication auth=authManager.authenticate(authToken);
+		CustomUserDetails userDetails=(CustomUserDetails)auth.getCredentials();
+		String sid=UUID.randomUUID().toString();
+		String refreshJti=UUID.randomUUID().toString();
+		String accessJti=UUID.randomUUID().toString();
+		String accessToken=jwtService.createAccessToken(sid,accessJti,userDetails.getUsername());
+		String refreshToken=jwtService.createRefreshToken(sid,refreshJti, userDetails.getUsername());
+		redisService.set(
+				String.format("session:%s",sid), 
+				objectMapper.writeValueAsString(
+						new SessionData(
+										request.getDeviceId(),
+										userDetails.getId(),
+										userDetails.getAuthorities().stream().map((v)->{
+												return v.toString();
+										}).collect(Collectors.toSet()),
+										refreshJti
+										)));
+		SignInResponse response=new SignInResponse(userDetails.getUsername(),new Date(System.currentTimeMillis()),accessToken,refreshToken);
+		return response;
+	}
+
+	@Override
+	public String logout(String token) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public GetUserResponse getUser(String token) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

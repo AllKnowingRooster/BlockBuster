@@ -85,7 +85,7 @@ public class UsersServiceImpl implements UsersService {
 		}
 		UsernamePasswordAuthenticationToken authToken=new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword());
 		Authentication auth=authManager.authenticate(authToken);
-		CustomUserDetails userDetails=(CustomUserDetails)auth.getCredentials();
+		CustomUserDetails userDetails=(CustomUserDetails)auth.getPrincipal();
 		String sid=UUID.randomUUID().toString();
 		String refreshJti=UUID.randomUUID().toString();
 		String accessJti=UUID.randomUUID().toString();
@@ -146,17 +146,17 @@ public class UsersServiceImpl implements UsersService {
 		if(!type.equals("refresh")) {
 			throw new RuntimeException("Invalid Token Type");
 		}
-		
 		String sid=claim.get("sid",String.class);
 		String key=String.format("session:%s",sid);
 		String refreshJti=claim.get("jti",String.class);
 		String blackListRefreshKey=String.format("blacklist:%s",refreshJti);
+		
 		Claims claimAccess=jwtService.validateToken(authorizationHeader.substring(7));
 		String accessSid=claimAccess.get("sid",String.class);
+		
 		if(!accessSid.equals(sid)){
 			throw new RuntimeException("Session Not matched");
-		}
-		
+		}	
 		if(!redisService.exists(key) || redisService.exists(blackListRefreshKey)) {
 			throw new RuntimeException("Session Expired");
 		}
@@ -168,7 +168,7 @@ public class UsersServiceImpl implements UsersService {
 		String newRefreshToken=jwtService.createRefreshToken(sid, newRefreshJti,claim.getSubject());
 		String newAccessToken=jwtService.createAccessToken(sid, newAccessJti,claimAccess.getSubject());
 		String accessJti=claimAccess.get("jti",String.class);
-		data.setRefreshJti(newRefreshToken);
+		data.setRefreshJti(newRefreshJti);
 		String blackListAccessKey=String.format("blacklist:%s",accessJti);
 		redisService.set(blackListAccessKey,"true");
 		redisService.set(blackListRefreshKey,"true");

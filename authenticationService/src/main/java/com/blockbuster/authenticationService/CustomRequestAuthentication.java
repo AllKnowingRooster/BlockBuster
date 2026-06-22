@@ -5,12 +5,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.blockbuster.dto.ErrorResponse;
 import com.blockbuster.dto.SessionData;
 
 import io.jsonwebtoken.Claims;
@@ -35,15 +37,22 @@ public class CustomRequestAuthentication extends OncePerRequestFilter{
 	ObjectMapper objectMapper;
 	
 	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		String path=request.getRequestURI();
+		 return path.startsWith("/api/users/signin")
+			        || path.startsWith("/api/users/signup");
+	}
+	
+	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	
+
 		String authorization=request.getHeader("Authorization");
 		if(authorization==null || !authorization.startsWith("Bearer ")) {
-			throw new RuntimeException("Invalid Header");
+			response.sendError(HttpStatus.UNAUTHORIZED.value(),objectMapper.writeValueAsString(new ErrorResponse("Header Not Valid")));
+			return;
 		}
-		
+	
 		String token=authorization.substring(7);
 		try {
 			Claims claim=jwtService.validateToken(token);
@@ -53,11 +62,14 @@ public class CustomRequestAuthentication extends OncePerRequestFilter{
 			String blacklistKey=String.format("blacklist:%s",jti);
 			
 			if(redisService.exists(blacklistKey)) {
-				throw new RuntimeException("Jwt Blacklisted");
+				response.sendError(HttpStatus.UNAUTHORIZED.value(),objectMapper.writeValueAsString(new ErrorResponse("JWT Blacklisted")));
+				return;
 			}
 			
+	
 			if(!redisService.exists(key)) {
-				throw new RuntimeException("Session Expired");
+				response.sendError(HttpStatus.UNAUTHORIZED.value(),objectMapper.writeValueAsString(new ErrorResponse("Session Expired")));
+				return;
 			}
 			
 			String subject=claim.getSubject();
@@ -69,10 +81,12 @@ public class CustomRequestAuthentication extends OncePerRequestFilter{
 				UsernamePasswordAuthenticationToken authToken=new UsernamePasswordAuthenticationToken(subject,null,listAuthorities);	
 				SecurityContextHolder.getContext().setAuthentication(authToken);
 			}
+
 			filterChain.doFilter(request, response);
 			return;
 		}catch(Exception e) {
-			throw new RuntimeException("Invalid JWT Token");
+			response.sendError(HttpStatus.UNAUTHORIZED.value(),objectMapper.writeValueAsString(new ErrorResponse(e.getMessage())));
+			return;
 		}
 		
 	}

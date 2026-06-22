@@ -43,7 +43,7 @@ public class JwtServiceImpl implements jwtService{
 	public String createRefreshToken(String sid,String jti,String subject) {
 		Map<String,Object> claims=new HashMap<String,Object>();
 		claims.put("sid", sid);
-		claims.put("type", "refersh");	
+		claims.put("type", "refresh");	
 		return Jwts.builder().subject(subject)
 							 .claims(claims)
 							 .issuer("Blockbuster Jwt Provider")

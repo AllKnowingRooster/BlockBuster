@@ -16,7 +16,7 @@ public class CustomLogger extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		String path=request.getServletPath();
+		String path=request.getRequestURI();
 		String method=request.getMethod();
 		long start=System.currentTimeMillis();
 		System.out.println(String.format("Method : %s | Path : %s",method,path));

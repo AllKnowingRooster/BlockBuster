@@ -1,0 +1,47 @@
+package com.blockbuster.authenticationService;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.blockbuster.dto.SignUpRequest;
+import com.blockbuster.dto.SignUpResponse;
+
+import tools.jackson.databind.ObjectMapper;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class AuthenticationServiceApplicationTests {
+
+	@Autowired
+	private MockMvc mvc;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	@Test
+	void testSignUp() throws Exception {
+		
+		SignUpRequest signup=new SignUpRequest("jackapple559@gmail.com","pass123",Set.of("User"));
+		MvcResult signupResult=mvc.perform(
+					post("/api/users/signup")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(signup))
+					
+				).andExpect(status().isOk())
+				.andReturn();
+		String response=signupResult.getResponse().getContentAsString();
+		SignUpResponse signupResponse=objectMapper.readValue(response, SignUpResponse);
+	}
+
+}
+

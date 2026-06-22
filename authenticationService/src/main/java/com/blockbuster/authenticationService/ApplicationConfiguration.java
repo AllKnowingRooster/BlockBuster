@@ -58,6 +58,7 @@ public class ApplicationConfiguration {
 	SecurityFilterChain filterChain(HttpSecurity http,CustomRequestAuthentication requestAuth,CustomLogger logger) {
 		http.formLogin((fl)->{fl.disable();})
 		.authorizeHttpRequests((auth)->{
+			auth.requestMatchers("/api/users/signin","/api/users/signup").permitAll();
 			auth.requestMatchers("/api/users/*").authenticated();
 			auth.anyRequest().permitAll();
 		})

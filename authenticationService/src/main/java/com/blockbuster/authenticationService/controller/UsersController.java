@@ -42,7 +42,7 @@ public class UsersController {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(authorizationHeader));
 	}
 	
-	@DeleteMapping("/delete")
+	@DeleteMapping("/logout")
 	public ResponseEntity<String> logout(@RequestHeader(value="Authorization") String authorizationHeader){
 		return ResponseEntity.status(HttpStatus.OK).body(userService.logout(authorizationHeader));
 	}

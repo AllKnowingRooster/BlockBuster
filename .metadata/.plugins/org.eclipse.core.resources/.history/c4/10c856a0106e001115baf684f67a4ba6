@@ -1,0 +1,56 @@
+package com.blockbuster.authenticationService.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.blockbuster.authenticationService.service.UsersService;
+import com.blockbuster.dto.GetUserResponse;
+import com.blockbuster.dto.RefreshRequest;
+import com.blockbuster.dto.RefreshResponse;
+import com.blockbuster.dto.SignInRequest;
+import com.blockbuster.dto.SignInResponse;
+import com.blockbuster.dto.SignUpRequest;
+import com.blockbuster.dto.SignUpResponse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+@RequestMapping("/api/users")
+@RestController
+public class UsersController {
+
+	@Autowired
+	UsersService userService;
+	
+	@PostMapping("/signup")
+	public ResponseEntity<SignUpResponse> signup(@RequestBody SignUpRequest request) {
+		return ResponseEntity.status(HttpStatus.OK).body(userService.signup(request));
+	}
+	
+	@PostMapping("/signin")
+	public ResponseEntity<SignInResponse> signin(@RequestBody SignInRequest request){
+		return ResponseEntity.status(HttpStatus.OK).body(userService.signin(request));
+	}
+	
+	@GetMapping("/getUser")
+	public ResponseEntity<GetUserResponse> getUser(@RequestHeader(value="Authorization") String authorizationHeader){
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(authorizationHeader));
+	}
+	
+	@DeleteMapping("/delete")
+	public ResponseEntity<String> logout(@RequestHeader(value="Authorization") String authorizationHeader){
+		return ResponseEntity.status(HttpStatus.OK).body(userService.logout(authorizationHeader));
+	}
+	
+	@PostMapping("/refresh")
+	public ResponseEntity<RefreshResponse> refresh(@RequestBody RefreshRequest request,@RequestHeader(value="Authorization") String authorizationHeader){
+		return ResponseEntity.status(HttpStatus.OK).body(userService.refresh(request,authorizationHeader));
+	}
+	
+	
+}

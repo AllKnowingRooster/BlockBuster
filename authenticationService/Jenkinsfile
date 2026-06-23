@@ -4,23 +4,26 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-		dir('authenticationService')
+		dir('authenticationService'){
                 	sh 'mvn clean compile'
+		}
             }
         }
 
         stage('Test') {
             steps {
-		dir('authenticationService')
+		dir('authenticationService'){
                 	sh 'mvn test'
+		}
             }
         }
     }
 
     post {
         always {
-		dir('authenticationService')
+		dir('authenticationService'){
             		junit '/target/surefire-reports/*.xml'
-        }
+        	}
+	}
     }
 }

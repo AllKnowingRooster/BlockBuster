@@ -7,6 +7,23 @@ pipeline {
     }
 
     stages {
+	stage('Build Dependecies'){
+		steps {
+			dir('DTOCollection'){
+				sh 'mvn clean install'
+			}
+
+			dir('jwtProvider'){
+				sh 'mvn clean install'
+			}
+
+
+			dir('redisManager'){
+				sh 'mvn clean install'
+			}
+		}
+	}
+
         stage('Build') {
             steps {
 		dir('authenticationService'){

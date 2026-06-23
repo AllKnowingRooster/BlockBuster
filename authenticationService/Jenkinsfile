@@ -21,9 +21,7 @@ pipeline {
 
     post {
         always {
-		dir('authenticationService'){
-            		junit '/target/surefire-reports/*.xml'
-        	}
+            	junit allowEmptyResults: true,testResults: 'authenticationService/target/surefire-reports/*.xml'
 	}
     }
 }

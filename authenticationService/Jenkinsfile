@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+	jdk 'JDK21'
+	maven 'MavenJenkins'
+    }
+
     stages {
         stage('Build') {
             steps {

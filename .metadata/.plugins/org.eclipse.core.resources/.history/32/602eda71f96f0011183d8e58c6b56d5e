@@ -16,7 +16,7 @@ pipeline {
 		
 		stage('Build Redis image'){
 			steps{
-				sh 'docker run -d --name redis-jenkins -p 6380:6379 redis:latest'	
+				sh 'docker run -d --name redis-jenkins -p 5680:5679 redis:latest'	
 			}
 		}
 	

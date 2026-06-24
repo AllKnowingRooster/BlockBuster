@@ -1,12 +1,5 @@
-grant all privileges on database blockbusterauthenticationservice to blockbuster;
-
-drop schema if exists springschema;
-create schema springschema;
-
-grant all privileges on schema springschema to blockbuster;
 
 drop table if exists springschema.roles;
-
 create table springschema.roles(
 	id bigserial,
 	rolename varchar(255) not null,
@@ -15,7 +8,6 @@ create table springschema.roles(
 );
 
 drop table if exists springschema.users;
-
 create table  springschema.users(
 	id bigserial,
 	email varchar(255) not null,
@@ -25,7 +17,6 @@ create table  springschema.users(
 );
 
 drop table if exists springschema.userroles;
-
 create table springschema.userroles(
 	user_id bigint,
 	role_id bigint,

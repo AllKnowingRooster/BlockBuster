@@ -1,5 +1,8 @@
 package com.blockbuster.authenticationService;
 
+import javax.sql.DataSource;
+
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -77,4 +80,16 @@ public class ApplicationConfiguration {
 		http.addFilterBefore(logger, CustomRequestAuthentication.class);
 		return http.build();
 	}
+	
+    @Bean(initMethod = "migrate")
+    Flyway flyway(DataSource dataSource) {
+        return Flyway.configure()
+                .dataSource(dataSource)
+                .schemas("springschema")
+                .createSchemas(true)
+                .locations("classpath:db/migration")
+                .baselineOnMigrate(false)
+                .load();
+    }
 }
+

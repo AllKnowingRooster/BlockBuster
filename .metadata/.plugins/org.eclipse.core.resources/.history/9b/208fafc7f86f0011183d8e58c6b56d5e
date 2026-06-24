@@ -57,6 +57,10 @@ pipeline {
 	    post {
 	        always {
 	            	junit allowEmptyResults: true,testResults: 'authenticationService/target/surefire-reports/*.xml'
+					sh 'docker stop postgres-jenkins'
+					sh 'docker rm postgres-jenkins'
+					sh 'docker stop redis-jenkins'
+					sh 'docker rm redis-jenkins'
 			}
     }
 }

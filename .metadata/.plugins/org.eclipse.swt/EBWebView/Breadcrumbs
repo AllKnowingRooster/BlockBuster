@@ -117,3 +117,25 @@
 3:12:52 Tab14 StartNav102 #typed
 3:12:52 Tab14 FinishNav102
 3:12:52 Tab14 PageLoad
+3:16:43 Tab14 StartNav103 #typed
+3:16:43 Tab14 FinishNav103 ERR_ABORTED
+3:16:43 Tab14 StartNav104 #typed
+3:16:43 Tab14 FinishNav104
+3:16:43 Tab14 PageLoad
+3:16:45 Tab14 StartNav105 #typed
+3:16:45 Tab14 FinishNav105
+3:16:45 Tab14 PageLoad
+3:16:48 Tab14 StartNav106 #typed
+3:16:48 Tab14 FinishNav106
+3:16:48 Tab14 PageLoad
+3:17:02 Tab14 StartNav107 #typed
+3:17:02 Tab14 FinishNav107
+3:17:02 Tab14 PageLoad
+3:17:04 Tab14 StartNav108 #typed
+3:17:04 Tab14 FinishNav108 ERR_ABORTED
+3:17:04 Tab14 StartNav109 #typed
+3:17:04 Tab14 FinishNav109
+3:17:04 Tab14 PageLoad
+3:17:05 Tab14 StartNav110 #typed
+3:17:05 Tab14 FinishNav110
+3:17:05 Tab14 PageLoad

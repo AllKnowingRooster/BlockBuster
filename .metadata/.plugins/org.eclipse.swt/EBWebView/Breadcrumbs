@@ -45,3 +45,10 @@
 8:24:40 Tab14 StartNav168 #typed
 8:24:40 Tab14 FinishNav168
 8:24:40 Tab14 PageLoad
+8:34:29 Tab15 StartNav169 #typed
+8:34:29 Tab15 FinishNav169
+8:34:29 Tab15 PageLoad
+8:37:14 Tab15 StartNav170 #typed
+8:37:14 Tab15 FinishNav170
+8:37:14 Tab15 PageLoad
+8:37:17 Microsoft.UnloadController.IsUnclosableApp_IsNotWebApp

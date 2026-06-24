@@ -18,10 +18,6 @@ pipeline {
 			-e POSTGRES_PASSWORD=blockbusterpass \
 			postgres'
 	}	
-	
-	stage('Build Redis image'){
-		sh 'docker run -d --name redis -p 5679:5679 redis:latest'
-	}
 
 	stage('Build Dependecies'){
 		steps {

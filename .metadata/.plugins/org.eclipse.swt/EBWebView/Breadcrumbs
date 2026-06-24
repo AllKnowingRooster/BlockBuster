@@ -100,3 +100,20 @@
 2:58:49 Tab7 StartNav97 #typed
 2:58:49 Tab7 FinishNav97
 2:58:49 Tab7 PageLoad
+3:12:01 Microsoft.NewBrowser_Popup
+3:12:01 Microsoft.BrowserList.AddBrowser
+3:12:01 Browser14 Insert active Tab14 at 0
+3:12:01 Tab14 StartNav98 #auto_toplevel
+3:12:01 Tab14 StartNav99 #typed
+3:12:01 Tab14 FinishNav99 ERR_ABORTED
+3:12:01 Tab14 StartNav100 #typed
+3:12:01 Tab14 FinishNav98
+3:12:01 Tab14 PageLoad
+3:12:01 Tab14 FinishNav100
+3:12:01 Tab14 PageLoad
+3:12:03 Tab14 StartNav101 #typed
+3:12:03 Tab14 FinishNav101
+3:12:03 Tab14 PageLoad
+3:12:52 Tab14 StartNav102 #typed
+3:12:52 Tab14 FinishNav102
+3:12:52 Tab14 PageLoad

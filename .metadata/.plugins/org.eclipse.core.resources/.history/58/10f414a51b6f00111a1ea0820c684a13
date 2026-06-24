@@ -1,0 +1,16 @@
+spring.application.name=authenticationService
+server.port=12000
+spring.datasource.url=jdbc:postgresql://localhost:5432/blockbusterauthenticationservice?currentSchema=springschema
+spring.datasource.username=blockbuster
+spring.datasource.password=blockbusterpass
+
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.show-sql=true
+
+
+jwt.secret=brownhenlayingonthegroundlayinganegg
+jwt.accessExpiration=3600000
+jwt.refreshExpiration=86400000
+
+redis.url=redis://localhost:6379
+redis.expiration=7200

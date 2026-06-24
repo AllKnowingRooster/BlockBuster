@@ -1,0 +1,38 @@
+grant all privileges on database blockbusterauthenticationservice to blockbuster;
+
+drop schema if exists springschema;
+create schema springschema;
+
+grant all privileges on schema springschema to blockbuster;
+
+drop table if exists springschema.roles;
+
+create table springschema.roles(
+	id bigserial,
+	rolename varchar(255),
+	constraint roles_unique_rolename unique(rolename),
+	constraint roles_primary_key_id primary key(id)
+);
+
+drop table if exists springschema.users;
+
+create table  springschema.users(
+	id bigserial,
+	email varchar(255),
+	password varchar(255),
+	constraint users_primary_key_id primary key(id),
+	constraint users_unique_email unique(email)
+);
+
+drop table if exists springschema.userroles;
+
+create table springschema.userroles(
+	user_id bigint,
+	role_id bigint,
+	constraint userroles_primary_key_user_id_role_id primary key(user_id,role_id),
+	constraint userroles_foreign_key_user_id foreign key(user_id) references springschema.users(id),
+	constraint userroles_foreign_key_role_id foreign key(role_id) references springschema.roles(id)	
+);
+
+
+

@@ -18,11 +18,11 @@ create table  springschema.users(
 
 drop table if exists springschema.userroles;
 create table springschema.userroles(
-	user_id bigint,
-	role_id bigint,
-	constraint userroles_primary_key_user_id_role_id primary key(user_id,role_id),
-	constraint userroles_foreign_key_user_id foreign key(user_id) references springschema.users(id),
-	constraint userroles_foreign_key_role_id foreign key(role_id) references springschema.roles(id)	
+	userid bigint,
+	roleid bigint,
+	constraint userroles_primary_key_userid_roleid primary key(userid,roleid),
+	constraint userroles_foreign_key_userid foreign key(userid) references springschema.users(id),
+	constraint userroles_foreign_key_roleid foreign key(roleid) references springschema.roles(id)	
 );
 
 

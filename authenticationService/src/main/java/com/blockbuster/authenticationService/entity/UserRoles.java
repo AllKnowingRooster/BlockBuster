@@ -15,7 +15,7 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @IdClass(UserRolesId.class)
-@Table(name="roles",uniqueConstraints= {
+@Table(name="userroles",uniqueConstraints= {
 		@UniqueConstraint(columnNames= {"userId","roleId"})
 })
 public class UserRoles {
@@ -23,13 +23,13 @@ public class UserRoles {
 	@Id
 	@JsonBackReference
 	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
-	@JoinColumn(name="userId",nullable=false,unique=false)
+	@JoinColumn(name="userid",nullable=false,unique=false)
 	private Users user;
 	
 	@Id
 	@JsonBackReference
 	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
-	@JoinColumn(name="roleId",nullable=false,unique=false)
+	@JoinColumn(name="roleid",nullable=false,unique=false)
 	private Roles role;
 	
 	public void setUser(Users user) {

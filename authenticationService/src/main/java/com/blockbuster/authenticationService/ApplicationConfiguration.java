@@ -83,13 +83,19 @@ public class ApplicationConfiguration {
 	
     @Bean(initMethod = "migrate")
     Flyway flyway(DataSource dataSource) {
-        return Flyway.configure()
+        Flyway flyway= Flyway.configure()
                 .dataSource(dataSource)
                 .schemas("springschema")
                 .createSchemas(true)
+                .cleanDisabled(false)
                 .locations("classpath:db/migration")
                 .baselineOnMigrate(false)
                 .load();
+       
+        flyway.clean();
+        flyway.migrate();
+        
+       return flyway;
     }
 }
 

@@ -10,13 +10,13 @@ pipeline {
 
 		stage('Build Postgres image'){
 			steps{
-				sh 'docker run -d --name postgres-jenkins --network jenkins -p 5433:5432 -e POSTGRES_DB=blockbusterauthenticationservice -e POSTGRES_USER=blockbuster -e POSTGRES_PASSWORD=blockbusterpass postgres'	
+				sh 'docker run -d --name postgres-jenkins -p 5433:5432 -e POSTGRES_DB=blockbusterauthenticationservice -e POSTGRES_USER=blockbuster -e POSTGRES_PASSWORD=blockbusterpass postgres'	
 			}
 		}	
 		
 		stage('Build Redis image'){
 			steps{
-				sh 'docker run -d --name redis-jenkins --network jenkins  -p 6380:6379 redis:latest'	
+				sh 'docker run -d --name redis-jenkins -p 6380:6379 redis:latest'	
 			}
 		}
 	

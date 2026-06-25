@@ -48,7 +48,7 @@ pipeline {
 	        stage('Test') {
 	            steps {
 			dir('authenticationService'){
-	                	sh 'mvn clean test'
+	                	sh 'mvn test'
 			}
 	            }
 	        }

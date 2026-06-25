@@ -113,3 +113,14 @@
 0:40:01 Tab2 StartNav6 #typed
 0:40:01 Tab2 FinishNav6
 0:40:01 Tab2 PageLoad
+0:49:53 Tab2 StartNav7 #typed
+0:49:53 Tab2 FinishNav7
+0:49:53 Tab2 PageLoad
+0:49:55 Tab2 StartNav8 #typed
+0:49:55 Tab2 FinishNav8
+0:49:55 Tab2 PageLoad
+0:49:57 Tab2 StartNav9 #typed
+0:49:57 Tab2 FinishNav9 ERR_ABORTED
+0:49:57 Tab2 StartNav10 #typed
+0:49:57 Tab2 FinishNav10
+0:49:57 Tab2 PageLoad

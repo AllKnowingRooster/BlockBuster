@@ -12,6 +12,6 @@ jwt.secret=brownhenlayingonthegroundlayinganegg
 jwt.accessExpiration=3600000
 jwt.refreshExpiration=86400000
 
-redis.url=redis://redis-jenkins:6379
+redis.url=redis://localhost:6379
 redis.expiration=7200
 

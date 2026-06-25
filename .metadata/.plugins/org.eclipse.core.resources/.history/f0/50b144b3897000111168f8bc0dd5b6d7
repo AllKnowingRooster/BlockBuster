@@ -39,30 +39,19 @@ pipeline {
 	
 	        stage('Build') {
 	            steps {
-					dir('authenticationService'){
-			                	sh 'mvn clean compile'
-					}
+			dir('authenticationService'){
+	                	sh 'mvn clean compile'
+			}
 	            }
 	        }
 	
 	        stage('Test') {
 	            steps {
-					dir('authenticationService'){
-			                	sh 'mvn clean test'
-					}
+			dir('authenticationService'){
+	                	sh 'mvn clean test'
+			}
 	            }
 	        }
-	        
-	        stage('Sonarqube analysis'){
-				steps{
-					dir('authenticationService'){
-						withSonarCubeEnv('SonarQubeJenkins'){
-							sh 'mvn clean verify sonar:sonar'
-						}
-					}
-				}
-			}
-	        
 	    }
 	
 	    post {

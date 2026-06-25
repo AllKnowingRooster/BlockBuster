@@ -92,3 +92,11 @@
 4:39:48 Tab2 StartNav47 #typed
 4:39:48 Tab2 FinishNav47
 4:39:48 Tab2 PageLoad
+4:40:20 Tab2 StartNav48 #typed
+4:40:20 Tab2 FinishNav48
+4:40:20 Tab2 PageLoad
+4:48:41 Tab2 StartNav49 #typed
+4:48:41 Tab2 FinishNav49 ERR_ABORTED
+4:48:41 Tab2 StartNav50 #typed
+4:48:41 Tab2 FinishNav50
+4:48:41 Tab2 PageLoad

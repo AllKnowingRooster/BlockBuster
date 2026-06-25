@@ -56,7 +56,7 @@ pipeline {
 	        stage('Sonarqube analysis'){
 				steps{
 					dir('authenticationService'){
-						withSonarQubeEnv('SonarQubeJenkins'){
+						withSonarCubeEnv('SonarQubeJenkins'){
 							sh 'mvn clean verify sonar:sonar'
 						}
 					}

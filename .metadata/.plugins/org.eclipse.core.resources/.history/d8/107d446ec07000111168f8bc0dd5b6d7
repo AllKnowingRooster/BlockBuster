@@ -44,9 +44,16 @@ pipeline {
 					}
 	            }
 	        }
-
+	
+	        stage('Test') {
+	            steps {
+					dir('authenticationService'){
+			                	sh 'mvn clean test'
+					}
+	            }
+	        }
 	        
-	        stage('test+Sonarqube analysis'){
+	        stage('Sonarqube analysis'){
 				steps{
 					dir('authenticationService'){
 						withSonarQubeEnv('SonarQubeJenkins'){

@@ -62,6 +62,14 @@ pipeline {
 					}
 				}
 			}
+			
+			stage('Build Image'){
+				steps{
+					dit('authenticationService'){
+						sh 'docker build -t blockbuster-authentication-service:latest'
+					}
+				}
+			}
 	        
 	    }
 	

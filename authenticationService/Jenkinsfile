@@ -51,7 +51,7 @@ pipeline {
 					dir('authenticationService'){
 						withEnv([
 							'POSTGRES_HOST=postgres-jenkins',
-							'POSTGRES_USER=blockbuster',
+							'POSTGRES_USERNAME=blockbuster',
 							'POSTGRES_PASSWORD=blockbusterpass',
 							'REDIS_HOST=redis-jenkins'
 						]){

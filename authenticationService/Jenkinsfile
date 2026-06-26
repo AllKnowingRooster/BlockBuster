@@ -49,8 +49,15 @@ pipeline {
 	        stage('test+Sonarqube analysis'){
 				steps{
 					dir('authenticationService'){
-						withSonarQubeEnv('SonarQubeJenkins'){
-							sh 'mvn clean verify sonar:sonar'
+						withEnv([
+							'DB_HOST=postgres-jenkins',
+							'DB_USER=blockbuster',
+							'DB_PASSWORD=blockbusterpass',
+							'REDIS_HOST=redis-jenkins'
+						]){
+							withSonarQubeEnv('SonarQubeJenkins'){
+								sh 'mvn clean verify sonar:sonar'
+							}	
 						}
 					}
 				}

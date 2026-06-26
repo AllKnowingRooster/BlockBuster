@@ -66,7 +66,7 @@ pipeline {
 			stage('Build Image'){
 				steps{
 					dir('authenticationService'){
-						sh 'docker build -t blockbuster-authentication-service:latest'
+						sh 'docker build -t blockbuster-authentication-service:latest .'
 					}
 				}
 			}

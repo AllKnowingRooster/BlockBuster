@@ -50,9 +50,9 @@ pipeline {
 				steps{
 					dir('authenticationService'){
 						withEnv([
-							'DB_HOST=postgres-jenkins',
-							'DB_USER=blockbuster',
-							'DB_PASSWORD=blockbusterpass',
+							'POSTGRES_HOST=postgres-jenkins',
+							'POSTGRES_USER=blockbuster',
+							'POSTGRES_PASSWORD=blockbusterpass',
 							'REDIS_HOST=redis-jenkins'
 						]){
 							withSonarQubeEnv('SonarQubeJenkins'){

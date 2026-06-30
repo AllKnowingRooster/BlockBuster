@@ -72,7 +72,7 @@ pipeline {
 			}
 
 			
-	        	stage('Load Image to Kind){
+	        	stage('Load Image to Kind'){
 				steps{
 					sh 'kind load docker-image blockbuster-authentication-service:latest'
 				}

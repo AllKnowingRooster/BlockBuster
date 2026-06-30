@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    tools {
+		jdk 'JDK21'
+		maven 'MavenJenkins'
+    }
+
+    stages {
+		
+		stage('Build Postgres image'){
+			steps{
+				sh 'docker run -d --name postgres-jenkins --network jenkins -p 5433:5432 -e POSTGRES_DB=blockbusterauthenticationservice -e POSTGRES_USER=blockbuster -e POSTGRES_PASSWORD=blockbusterpass postgres'	
+			}
+		}	
+		
+		stage('Build Redis image'){
+			steps{
+				sh 'docker run -d --name redis-jenkins --network jenkins  -p 6380:6379 redis:latest'	
+			}
+		}
+	
+		stage('Build Dependecies'){
+			steps {
+				dir('DTOCollection'){
+					sh 'mvn clean install'
+				}
+	
+				dir('jwtProvider'){
+					sh 'mvn clean install'
+				}
+	
+	
+				dir('redisManager'){
+					sh 'mvn clean install'
+				}
+			}
+		}
+	
+	        stage('Build') {
+	            steps {
+					dir('authenticationService'){
+			                	sh 'mvn clean compile'
+					}
+	            }
+	        }
+
+	        
+	        stage('test+Sonarqube analysis'){
+				steps{
+					dir('authenticationService'){
+						withSonarQubeEnv('SonarQubeJenkins'){
+							sh 'mvn clean verify sonar:sonar'
+						}
+					}
+				}
+			}
+	        
+	    }
+	
+	    post {
+	        always {
+	            	junit allowEmptyResults: true,testResults: 'authenticationService/target/surefire-reports/*.xml'
+					sh 'docker stop postgres-jenkins'
+					sh 'docker rm postgres-jenkins'
+					sh 'docker stop redis-jenkins'
+					sh 'docker rm redis-jenkins'
+			}
+    }
+}

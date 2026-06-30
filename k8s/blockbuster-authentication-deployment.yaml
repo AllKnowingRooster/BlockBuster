@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: blockbuster-authentication-service
+  name: blockbuster-authentication-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blockbuster-authentication-service
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: blockbuster-authentication-service
+    spec:
+      containers:
+      - image: blockbuster-authentication-service:latest
+        name: blockbuster-authentication-service
+
+        env:
+        - name: POSTGRES_HOST
+          value: authentication-service-postgresql
+        - name: POSTGRES_USERNAME
+          value: blockbuster
+        - name: POSTGRES_PASSWORD
+          value: blockbusterpass
+        - name: REDIS_HOST
+          value: blockbuster-redis
+
+        imagePullPolicy: Never
+        resources: {}
+status: {}

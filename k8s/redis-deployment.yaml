@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: blockbuster-redis
+  name: blockbuster-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blockbuster-redis
+
+  template:
+    metadata:
+      labels:
+        app: blockbuster-redis
+    spec:
+      containers:
+      - image: redis:latest
+        name: redis

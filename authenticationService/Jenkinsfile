@@ -70,16 +70,30 @@ pipeline {
 					}
 				}
 			}
-	        
+
+			
+	        	stage('Load Image to Kind){
+				steps{
+					sh 'kind load docker-image blockbuster-authentication-service:latest'
+				}
+			}
+			
+			stage('Build Pod In Kubernetes'){
+				steps{
+					dir('k8s'){
+						sh 'kubectl apply -f ./'
+					}
+				}
+			}
 	    }
 	
 	    post {
 	        always {
-	            	junit allowEmptyResults: true,testResults: 'authenticationService/target/surefire-reports/*.xml'
-					sh 'docker stop postgres-jenkins'
-					sh 'docker rm postgres-jenkins'
-					sh 'docker stop redis-jenkins'
-					sh 'docker rm redis-jenkins'
+	            		junit allowEmptyResults: true,testResults: 'authenticationService/target/surefire-reports/*.xml'
+				sh 'docker stop postgres-jenkins'
+				sh 'docker rm postgres-jenkins'
+				sh 'docker stop redis-jenkins'
+				sh 'docker rm redis-jenkins'
 			}
     }
 }
